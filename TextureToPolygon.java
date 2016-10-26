@@ -1,0 +1,109 @@
+package basics;
+
+
+import javax.swing.*;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.*;
+
+import java.io.File;
+
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
+
+
+public class TextureToPolygon implements GLEventListener{
+	File file;
+	Texture texture;
+    /**
+     * A main routine to create and show a window that contains a
+     * panel of type UnlitCube.  The program ends when the
+     * user closes the window.
+     */
+    public static void main(String[] args) {
+        JFrame window = new JFrame("A Simple program to texture map a polygon");
+        final GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities capabilities = new GLCapabilities(profile);
+        // The canvas
+        final GLCanvas glcanvas = new GLCanvas(capabilities);
+        TextureToPolygon cube = new TextureToPolygon();
+        glcanvas.addGLEventListener(cube);        
+        glcanvas.setSize(400,400);
+
+        
+        window.add( glcanvas );
+        window.pack();
+        window.setLocation(50,50);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+        glcanvas.requestFocusInWindow();
+       
+    }
+    
+    /**
+     * Constructor for class UnlitCube.
+     */
+    public TextureToPolygon() {
+    	    }
+      
+    private void square(GL2 gl2, double r, double g, double b) {
+        gl2.glColor3d(r,g,b);
+        gl2.glBegin(GL2.GL_POLYGON);
+        gl2.glNormal3f(0,0,1);
+        gl2.glTexCoord2d(0, 0);
+        gl2.glVertex3d(-0.5, -0.5, 0.5);
+        gl2.glTexCoord2d(1, 0);
+        gl2.glVertex3d(0.5, -0.5, 0.5);
+        gl2.glTexCoord2d(1, 1);
+        gl2.glVertex3d(0.5, 0.5, 0.5);
+        gl2.glTexCoord2d(0, 1);
+        gl2.glVertex3d(-0.5, 0.5, 0.5);
+        gl2.glEnd();
+    }
+  
+    public void display(GLAutoDrawable drawable) {    
+        
+        GL2 gl2 = drawable.getGL().getGL2(); // The object that contains all the OpenGL methods.
+         
+        gl2.glClear( GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+        
+        gl2.glLoadIdentity();             // Set up modelview transform. 
+        
+      //  gl2.glRotatef(180, 0, 1, 0);
+        square(gl2,1,1,1);
+        
+    } // end display()
+
+    public void init(GLAutoDrawable drawable) {
+           // called when the panel is created
+    	try {                
+	        /*URL textureURL;
+	        textureURL=getClass().getClassLoader().getResource("texture/Jerry.jpg");*/
+    		 file=new File("E:\\workspace(juno)\\JOGL1\\src\\texture\\Brick.jpg");
+	        texture=TextureIO.newTexture(file,true);
+	       } catch (Exception ex) {
+	            // handle exception...
+	    	   System.out.println("Exception");
+	       }
+    	GL2 gl2 = drawable.getGL().getGL2();
+        gl2.glMatrixMode(GL2.GL_PROJECTION);
+        gl2.glOrtho(-1, 1 ,-1, 1, -1, 1);
+        gl2.glMatrixMode(GL2.GL_MODELVIEW);
+        gl2.glClearColor( 0, 0, 0, 1 );
+        gl2.glEnable(GL2.GL_DEPTH_TEST);
+     
+        texture.enable(gl2);
+        texture.bind(gl2);
+        texture.setTexParameteri(gl2,GL2.GL_TEXTURE_WRAP_S,GL2.GL_REPEAT);
+      	texture.setTexParameteri(gl2,GL2.GL_TEXTURE_WRAP_T,GL2.GL_REPEAT);
+    }
+
+    public void dispose(GLAutoDrawable drawable) {
+            // called when the panel is being disposed
+    }
+
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+            // called when user resizes the window
+    }
+   
+}
+
