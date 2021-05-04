@@ -5,6 +5,6 @@ I program mostly in immediate mode. Slowly making progress
 into modern OpenGL.
 
 This repository contains projects(JOGL) that I have shared in
-my blog: http://cglabprojects.blogspot.in
+my blog: http://cglabprojects.blogspot.com
 
 Hope you like these projects!
